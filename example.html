@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="app2">
+        <p>{{a}}</p>
+        <p>{{b}}</p>
+        <button v-on:click="touch">点击</button>
+    </div>
+
+    <hr />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <div id="app">
+        <p>{{name}}</p>
+        <p v-once>{{age}}</p>
+        <button @click="editName">修改名称</button>
+        <p :[style]="{val: true}">动态属性</p>
+        <p :[style2]="{val: true}">动态属性</p>
+        <!-- 错误写法 - 浏览器会把attribute转换成小写 styleName被转换成了stylename -->
+        <!-- <p :[styleName]="{val: true}">动态属性</p> -->
+        <!-- 修饰符 .prevent -->
+        <form v-on:submit.prevent="onSubmit">
+            <button>提交</button>
+        </form>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        // 被冻结的数据不会被修改
+        var obj = Object.freeze({
+            a: 1,
+            b: 'qwe'
+        })
+        var vm2 = new Vue({
+            el: '#app2',
+            data: obj,
+            methods: {
+                touch(){
+                    console.log(this.a);
+                    this.a = '张三';
+                }
+            },
+        })
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                name: '张三',
+                age: 18,
+                style: 'class',
+                style2: null,
+                styleName: 'class',
+            },
+            methods: {
+                editName(){
+                    this.name = '李四';
+                    this.age = 16;
+                },
+                onSubmit(){
+                    console.log(1);
+                }
+            },
+            beforeCreate(){
+                console.log('beforeCreate: 实例未挂载之前不可以使用data中的数据');
+            },
+            created(){
+                console.log('create: 实例挂载之后 已经可以使用data中的属性了');
+            },
+            beforeMount(){
+                console.log('brforeMount: el挂载之前')
+            },
+            mounted(){
+                console.log('mounted: el挂载后 此时已经可以操作dom了');
+            },
+            beforeUpdate(){
+                console.log('brforeUpdate: 修改数据之前执行');
+            },
+            updated(){
+                console.log('updated: 修改数据之后执行');
+            },
+            beforeDestory(){
+                console.log('brforeDestory: 离开页面之前执行');
+            },
+            destoryed(){
+                console.log('destoryed: 离开页面之后执行');
+            }
+        })
+    </script>
+</body>
+</html>
