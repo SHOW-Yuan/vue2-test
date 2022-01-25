@@ -19,7 +19,9 @@
 
         <input @keyup.81="submit" type="text">
         <input @keyup.shift.67="ctrlC" type="text">
-        <button @click.ctrl="btnClick">点击</button>
+        <br />
+        <input v-model.number="iptVal" @blur="iptBlur" placeholder="输入内容" type="text">
+        <div @click.ctrl="btnClick">点击</div>
     </div>
 
     
@@ -31,7 +33,8 @@
         const vm = new Vue({
             el: '#app',
             data:{
-                PageDow: 81
+                PageDow: 81,
+                iptVal: ''
             },
             methods: {
                 log(num){
@@ -45,6 +48,9 @@
                 },
                 btnClick(){
                     console.log('按钮点击');
+                },
+                iptBlur(){
+                    console.log(this.iptVal);
                 }
             }
         })
