@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <div @click="log(1)" @click.capture="log(5)">
+            <div @click="log(2)" @click.capture="log(6)">
+                <div @click.="log(3)" @click.capture="log(7)">
+                    <div @click="log(4)" @click.capture="log(8)">
+                        点击这里
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input @keyup.81="submit" type="text">
+        <input @keyup.shift.67="ctrlC" type="text">
+        <button @click.ctrl="btnClick">点击</button>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        console.log(Vue.config.keyCodes)
+        Vue.config.keyCodes.f1 = 112
+        Vue.config.keyCodes.enter = 81
+        const vm = new Vue({
+            el: '#app',
+            data:{
+                PageDow: 81
+            },
+            methods: {
+                log(num){
+                    console.log(num);
+                },
+                submit(){
+                    console.log('提交');
+                },
+                ctrlC(){
+                    console.log('🈲禁止粘贴！！！');
+                },
+                btnClick(){
+                    console.log('按钮点击');
+                }
+            }
+        })
+    </script>
+</body>
+</html>
