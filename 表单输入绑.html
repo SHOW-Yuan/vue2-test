@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="app">
+        <input v-model="iptVal" true-value="yes" false-value="no" type="checkbox">
+        <input v-model.lazy="ipt2" @input="input" @change="change" type="text">
+        <input v-model.number="ipt3" type="text">
+        <input v-model.trim="ipt4" type="text">
+
+        <p>{{ ipt3 }}</p>
+        <p>{{ ipt4 }}</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                iptVal: 'no',
+                ipt2: '',
+                ipt3: '',
+                ipt4: '',
+            },
+            methods: {
+                input(e){
+                    console.log('input',this.ipt2);
+                },
+                change(e){
+                    console.log('change',this.ipt2);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
