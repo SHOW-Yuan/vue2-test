@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组建基础</title>
+</head>
+<body>
+
+    <div id="app">
+        <button-counter title="按钮组1"></button-counter>
+        <button-counter title="这个标题"></button-counter>
+        <button-counter title="又是一个标题"></button-counter>
+        
+        <ipt-model v-model="myIptVal"></ipt-model>
+
+        <text-box>
+            dsaas
+        </text-box>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.component('button-counter',{
+            template: 
+            `
+            <div>
+                <h1>{{ title }}</h1>
+                <button @click="count++">按钮 {{count}}</button>
+            </div>
+            `,
+            props: ['title'],
+            data(){
+                return{
+                    count: 1
+                }
+            },
+        })
+
+        Vue.component('ipt-model',{
+            template: 
+            `<div>
+            <input :value="value" @input="$emit('input',$event.target.value)" type="text">
+        </div>
+            `,
+            props: ['value'],
+            data(){
+                return{
+                    count: 1
+                }
+            },
+        })
+
+        Vue.component('text-box',{
+            template: 
+            `<div>
+                <slot></slot>
+                <span>啊哈哈哈哈哈哈哈哈</span>
+            </div>
+            `,
+            props: ['value'],
+            data(){
+                return{
+                    count: 1
+                }
+            },
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                myIptVal: '123'
+            },
+            watch:{
+                myIptVal(nv,ov){
+                    console.log(nv);
+                }
+            },
+            methods: {
+                
+            }
+        })
+    </script>
+</body>
+</html>

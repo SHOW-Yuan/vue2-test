@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组建注册</title>
+</head>
+<body>
+
+    <div id="app">
+        <my-component-name title="按钮组1">
+        </my-component-name>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.component('my-component-name',{
+            template: 
+            `
+            <div>
+                <h1>{{ title }}</h1>
+                <button @click="count++">按钮 {{count}}</button>
+                <component-a></component-a>
+            </div>
+            `,
+            props: ['title'],
+            data(){
+                return{
+                    count: 1
+                }
+            },
+            components: {
+                'component-a': {
+                    name: 'component-a',
+                    data(){
+                        return {
+                            txt: '张三'
+                        }
+                    },
+                    template: '<p>{{txt}}</p>'
+                }
+            }
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                myIptVal: '123'
+            },
+            watch:{
+                myIptVal(nv,ov){
+                    console.log(nv);
+                }
+            },
+            methods: {
+                
+            }
+        })
+    </script>
+</body>
+</html>
