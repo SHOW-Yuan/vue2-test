@@ -8,36 +8,108 @@
 <body>
 
     <div id="app">
-        <my-component-name title="按钮组1">
+        <my-component-name 
+            title="按钮组1"
+            txt-val="HTML 中的 attribute 名是大小写不敏感的"
+        >
         </my-component-name>
     </div>
     
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script>
+        function Person(firstName, lastName){
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
         Vue.component('my-component-name',{
             template: 
             `
             <div>
                 <h1>{{ title }}</h1>
-                <button @click="count++">按钮 {{count}}</button>
-                <component-a></component-a>
+                <p>{{ txtVal }}</p>
+                <txt-box
+                    :txt-v="'哈哈哈哈哈哈哈哈哈哈或或或或'"
+                    str='张三'
+                    :num='123'
+                    v-bind="post"
+                    :age="17"
+                    type="error"
+                    :author="author"
+                    data-date-picker="activated"
+                    qwe="'qwe'"
+                ></txt-box>
             </div>
             `,
-            props: ['title'],
+            props: [
+                'title',
+                'txtVal'
+            ],
             data(){
                 return{
-                    count: 1
+                    count: 1,
+                    post: {
+                        id: 1,
+                        title: 'My Journey with Vue'
+                    },
+                    author: new Person('张三','李思')
                 }
             },
+            mounted(){
+                // let a = new Person('张三','李思');
+                // console.log(a);
+            },
             components: {
-                'component-a': {
-                    name: 'component-a',
-                    data(){
-                        return {
-                            txt: '张三'
-                        }
+                'txt-box': {
+                    name: 'txt-box',
+                    props: {
+                        txtV: [Number, String],
+                        str: String,
+                        num: Number,
+                        bool: Boolean,
+                        arr: Array,
+                        obj: Object,
+                        fun: Function,
+                        pro: Promise,
+                        id: [Number, String],
+                        title: String,
+                        age: {
+                            type: Number,
+                            required: true,
+                            default: 18
+                        },
+                        prrpInfo: {
+                            type: Object,
+                            default: () => { return {} }
+                        },
+                        infoList: {
+                            type: Array,
+                            default: () => []
+                        },
+                        type: {
+                            validator: (val)=>{
+                                return ['success', 'error', 'warning'].includes(val)
+                            }
+                        },
+                        author: Person,
+                        qwe: String
                     },
-                    template: '<p>{{txt}}</p>'
+                    template: 
+                    `
+                    <div style="color: red">
+                        {{ txtV }}
+                        <br />
+                        {{ str }}    
+                        {{ num }}    
+                        {{ id + title }}    
+                        <br />
+                        年龄：{{ id + title }}
+                        <hr /> 
+                        {{ type }}   
+                    </div>
+                    `,
+                    created(){
+                        console.log(this.author.lastName);
+                    }
                 }
             }
         })
@@ -54,6 +126,34 @@
             },
             methods: {
                 
+            }
+        })
+    </script>
+
+
+    
+    <div id="app2">
+        <my-component type="date" class="asd"></my-component>
+    </div>
+    <script>
+        const vm2 = new Vue({
+            el: '#app2',
+            components: {
+                'my-component': {
+                    inheritAttrs: false,
+                    props: ['label', 'value'],
+                    template: `
+                    <label>
+                        {{ label }}
+                        <input
+                            v-bind="$attrs"
+                            v-bind:value="value"
+                            v-on:input="$emit('input', $event.target.value)"
+                        >
+                        <p v-bind="$attrs"></p>
+                    </label>
+                    `
+                }
             }
         })
     </script>
