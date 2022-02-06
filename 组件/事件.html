@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>事件</title>
+</head>
+<body>
+    <div id="app">
+        <my-component v-model="checkboxVal" @myEvent="myEvent(123)"></my-component>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script>
+        Vue.component('my-component-name',{
+            template: 
+            `
+            <div>
+                <h1 @click="$emit('mEvent')">{{ title }}</h1>
+                <component-a v-on="$listeners" :obj.sync="obj" @input="onInput" @focus="onFocus"></component-a>
+            </div>
+            `,
+            props: ['title'],
+            data(){
+                return{
+                    count: 1,
+                    obj: {
+                        name:'姓名',
+                        age:'年龄'
+                    }
+                }
+            },
+            methods:{
+                onFocus(e){
+                    console.log(222,e);
+                },
+                onInput(e){
+                    console.log(333,e);
+                }
+            },
+            components: {
+                'component-a': {
+                    inheritAttrs: false,
+                    name: 'component-a',
+                    props: ['obj','value'],
+                    data(){
+                        return {
+                            txt: '张三'
+                        }
+                    },
+                    computed: {
+                        inputListeners(){
+                            var vm = this;
+                            console.log(this.$listeners);
+                            return Object.assign(
+                                {},
+                                this.$listeners,
+                                {
+                                    input: function(e){
+                                        vm.$emit('input', e.target.value)
+                                    }
+                                }
+                            )
+                        }
+                    },
+                    mounted(){
+                        this.$listeners.focus('大萨达萨达');
+                        setTimeout(() => {
+                            let a = {
+                                name: '张三'
+                            }
+                            this.$emit('update:obj.name', a)
+                        }, 1000);
+                    },
+                    template: `
+                    <label>
+                        {{obj.name}}{{obj.age}}：
+                        <input
+                            v-bind="$attrs"
+                            :value="value"
+                            v-on="inputListeners"
+                            type="text"
+                        />
+                    </label>
+                    `
+                }
+            }
+        })
+        // 自定义事件
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                checkboxVal: true
+            },
+            methods:{
+                myEvent(val){
+                    console.log(11111111111,val);
+                }
+            },
+            watch: {
+                checkboxVal(nv,ov){
+                    console.log(nv);
+                }
+            },
+            components:{
+                'my-component': {
+                    model:{
+                        prop:'checkboxVal',
+                        event:'change'
+                    },
+                    props: ['checkboxVal'],
+                    data(){
+                        return {}
+                    },
+                    template: `
+                    <div>
+                        <input :checked="checkboxVal" @change="$emit('change', $event.target.checked)" type="checkbox" />
+                        <my-component-name @mEvent="mEvent()" title="事件"></my-component-name>
+                    </div>
+                    `,
+                    methods: {
+                        mEvent(){
+                            console.log(11111111111);
+                        },
+                        change(e){
+                            console.log(this.$parent.checkboxVal);
+                        }
+                    },
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>
