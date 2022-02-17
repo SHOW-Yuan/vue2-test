@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <input v-focus="1+1" type="text">
+
+        <div v-demo:foo.a.b="massage"></div>
+        <div v-demo1="{ name: '张三', age: 18 }"></div>
+    </div>
+    <script src="../vue.js"></script>
+    <script>
+        Vue.directive('focus', {
+            // 只调用一次 绑定到元素上时调用
+            bind(){
+
+            },
+            // 被绑定元素插入到父节点时调用 (仅保证父节点存在 不一定插入到dom上
+            inserted(el, binding, vnode, oldVnode){
+                console.log(el, binding, vnode, oldVnode);
+                // el.focus();
+            },
+            // 所有组件的VNode更新时调用 【但也可能发生在子VNdoe更新之前】
+            update(){
+                
+            },
+            // 组件所在的所有VNode更新后调用
+            componentUpdate(){
+
+            },
+            // 解绑元素时调用
+            unbind(){
+
+            }
+        })
+
+        Vue.directive('demo', {
+            bind(el, binding, vnode){
+                const s = JSON.stringify;
+                el.innerHTML = `
+                name: ${ s(binding.name) }<br />
+                value: ${ s(binding.value) }<br />
+                expression: ${ s(binding.expression) }<br />
+                argument: ${ s(binding.arg) }<br />
+                modifiers: ${ s(binding.modifiers) }<br />
+                vnode keys: ${ Object.keys(vnode).join('，') }<br />
+                `
+            }
+        })
+
+        Vue.directive('demo1', (el, binding)=>{
+            console.log(binding.expression);
+            console.log(binding.value);
+        })
+
+        new Vue({
+            el: "#app",
+            data: {
+                massage: 'hello'
+            }
+        })
+    </script>
+
+</body>
+</html>
