@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <my-com></my-com>
+    </div>
+    <script src="../vue.js"></script>
+    <script>
+        const MyPlugin = {};
+        // vue.js插件应该暴露一个 install 方法
+        MyPlugin.install = function (Vue, options){
+            Vue.component('my-com', {
+                render(h){
+                    return h('div','哈哈哈哈哈哈哈哈哈')
+                }
+            })
+        }
+
+        Vue.use(MyPlugin);
+
+        new Vue({
+            el: "#app",
+            data: {
+                massage: 'hello'
+            }
+        })
+    </script>
+
+</body>
+</html>

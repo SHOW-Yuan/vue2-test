@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>渲染函数&JSX</title>
+</head>
+<body>
+    <div id="app">
+        <my-component :level="1">123</my-component>
+        <anchored-heading :level="1">
+            <p>张三</p>
+            <p>李四</p>
+            <p>王五</p>
+        </anchored-heading>
+
+        <my-component2 :items="[1,2,3]"></my-component2>
+        <my-componen3 v-model="num"></my-componen3>
+        <!-- <my-component4></my-component4> -->
+        <my-component5>
+            <hr />
+            <template v-slot="props">{{ props.text }}</template>
+        </my-component5>
+    </div>
+
+    <script src="../vue.js"></script>
+    <script>
+
+        Vue.component('my-component',{
+            props: {
+                level: {
+                    type: Number,
+                    require: true
+                }
+            },
+            render(createElement){
+                return createElement(
+                    'h' + this.level,
+                    this.$slots.default,
+                    [
+                        '一些文字',
+                        createElement('span', '行内1'),
+                        createElement('span', '行内2'),
+                        createElement('span', '行内3')
+                    ]
+                )
+            }
+        })
+
+        var getChildrenTextContent = function (children) {
+            return children.map(function (node) {
+                return node.children
+                ? getChildrenTextContent(node.children)
+                : node.text
+            }).join('')
+        }
+
+        Vue.component('anchored-heading', {
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            },
+            render: function (createElement) {
+                console.log(999999);
+                // 创建 kebab-case 风格的 ID
+                var headingId = getChildrenTextContent(this.$slots.default)
+                .toLowerCase()
+                .replace(/\W+/g, '-')
+                .replace(/(^-|-$)/g, '')
+
+                return createElement(
+                    'h' + this.level,
+                    [
+                        createElement('a', {
+                            attrs: {
+                                name: headingId,
+                                href: '#' + headingId
+                            }
+                        }, this.$slots.default)
+                    ]
+                )
+            }
+        })
+
+        Vue.component('my-component2',{
+            props: {
+                items: {
+                    type: Array,
+                    default: ()=> []
+                }
+            },
+            render(h){
+                if(this.items.length){
+                    return h(
+                        'ul',
+                        {
+                            attrs: {
+                                'data-type': 'list'
+                            }
+                        },
+                        this.items.map(item => h('li', item))
+                    )
+                }else {
+                    return h('p', '请传入一个有数据的数组')
+                }
+            }
+        })
+
+        Vue.component('my-componen3',{
+            props: ['value'],
+            render(h){
+                const self = this;
+                return h(
+                    'input',
+                    {
+                        domProps: {
+                            value: self.value
+                        },
+                        on: {
+                            input(e){
+                                self.$emit('input', e.target.value);
+                            }
+                        }
+                    }
+                )
+            }
+        })
+
+        Vue.component('my-component4', {
+            render(h){
+                return h('div', 
+                    Array.apply(null, { length: 20 }).map(x=>{
+                        return h('p', 'hi');
+                    })
+                )
+            }
+        })
+        // <div><child v-slot="props"><span>{{ props.text }}</span></child></div>
+        // 插槽
+        Vue.component('my-component5', {
+            props: ['text'],
+            render(h) {
+                return h('div', [
+                    h('div', {
+                        scopedSlots: {
+                            default(props){
+                                console.log(props);
+                                return h('span', props.text)
+                            }
+                        }
+                    })
+                ])
+            }
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                num: 3
+            },
+            watch: {
+                num(nv,ov){
+                    console.log(111111111111,nv);
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>
