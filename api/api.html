@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>alert</title>
+    <style>
+        .box {
+            position: fixed;
+            width: 100%;
+            top: 16px;
+            left: 0;
+            text-align: center;
+            pointer-events: none;
+            background-color: #fff;
+            border: grey 3px solid;
+            box-sizing: border-box;
+        }
+        .box-content {
+            width: 200px;
+            margin: 10px auto;
+            font-size: 14px;
+            padding: 8px 16px;
+            background: #fff;
+            border-radius: 3px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="app">
+        <button @click="vbs">{{ name }}</button>
+        <hr/>
+        <button @click="iptFocus">输入框获取焦点</button>
+        <input v-model="myInfo.age" v-if="iptFlag" id="ipt" ref="ipt" type="text">
+        <button @click="myInfo.age++">add</button>
+        <button @click="deleteKey">deleteKey</button>
+        <p>{{ myInfo.name }}：{{ myInfo.age }}</p>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <hr/>
+        <p>{{ filterVal | my-filter | omit }}</p>
+        <input v-model="$data._a" type="text">
+        <span>{{ $data._a }}</span>
+        <br/>
+        <br/>
+        <hr/>
+    </div>
+
+    <div id="app2"></div>
+    <div id="app3"></div>
+    
+    
+    <script src="../vue.js"></script>
+    <script>
+        // 构造器内容
+        const extendComponent = Vue.extend({
+            props: {
+                title: '',
+                require: true,
+                title: {
+                    type: String,
+                    default: ''
+                },
+                message: {
+                    type: String,
+                    default: ''
+                },
+                duration: {
+                    type: Number,
+                    default: 2000
+                },
+            },
+            template: `
+                <div class="box" v-if="isShow">
+                    <h3>{{title}}</h3>
+                    <p class="box-content">{{message}}</p>
+                </div>
+            `,
+            data(){
+                return {
+                    isShow: false
+                }
+            },
+            methods: {
+                show(){
+                    this.isShow = true;
+                    setTimeout(this.hide, this.duration);
+                },
+                hide(){
+                    this.isShow = false;
+                    this.remove();
+                }
+            }
+        })
+
+        let instance;
+        const MyAlert = (options)=>{
+            // 创建实例 并挂载
+            instance = new extendComponent({
+                propsData: { ...options }
+            }).$mount();
+
+            // 弹窗结束方法
+            instance.remove = ()=>{
+                // 移除元素
+                document.body.removeChild(instance.$el);
+                // 手动销毁实例
+                instance.$destroy()
+            }
+            
+            // 把组件内容插入到DOM中
+            document.body.appendChild(instance.$el);
+
+            return instance;
+        }
+
+        // 把方法挂载到Vue实例上
+        Vue.prototype.$alert = (opt)=> {
+            const comp = MyAlert(opt);
+            comp.show();
+            return comp;
+        }
+
+        /* filter */
+        Vue.filter('my-filter', (val)=>{
+            if(!val) return '';
+            return val.toString().toUpperCase();
+        })
+        Vue.filter('omit', (val)=>{
+            if(!val) return '';
+            return val + '...';
+        })
+        const omitFilter = Vue.filter('omit');
+        console.log(omitFilter);
+        
+        /* directive */
+        Vue.directive('loadmore', (el, binding)=>{
+
+        })
+        /* components */
+        Vue.component('my-component', {
+            model: {
+                event:''
+            },
+            // props: ['name','obj'],
+            props: {
+                val: {
+                    type: Number,
+                    default: 1,
+                    require: true
+                },
+                age: Number
+            }
+        })
+        /* extend */
+        const Comp = Vue.extend({
+            props: ['name']
+        })
+        const vm2 = new Comp({
+            propsData: {
+                name: '张三'
+            }
+        })
+
+        console.log(Vue.version);
+
+        const vm = new Vue({
+            el: '#app',
+            data: {
+                foo: 123,
+                name: '张三',
+                iptFlag: false,
+                myInfo: {
+                    name: '王五',
+                },
+                filterVal: 'hello word!',
+                _a: '嘿嘿嘿',
+                $b: '😃',
+                a: 1,
+                arr1: [
+                    [123],
+                    [['qwe'],['zxc']]
+                ]
+            },
+            computed: {
+                aPlus: {
+                    get(){
+                        return this.a + 10;
+                    },
+                    set(v){
+                        console.log(v-1);
+                        this.a = v - 1;
+                    }
+                }
+            },
+            watch: {
+                name: {
+                    handler: 'someMethod',
+                    immediate: true
+                },
+                arr1: [
+                    'handle1',
+                    function handler2(nl,ol){
+                        console.log(222222222,nl,ol);
+                        function handle3(nl,ol){
+                            console.log(3333333,'数组第一个');
+                        }
+                    }
+                ]
+            },
+            objInfo: 'foo',
+            mounted(){
+                /* 在响应式对象上新增响应式的值 */
+                // this.myInfo.age = 18;
+                this.$set(this.myInfo, 'age', 18)
+                console.log(this.$data.filterVal);
+                console.log(this.$data._a);
+                console.log(this.$data.$b);
+                console.log('😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝😝');
+                console.log(this.aPlus);
+                console.log(this.aPlus = 5);
+                console.log('🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬🛬');
+                console.log(this.$options.methods);
+            },
+            methods: {
+                vbs(){
+                    this.$alert({
+                        title: '标题',
+                        message: '文案......'
+                    })
+                },
+                iptFocus(){
+                    this.iptFlag = true;
+                    /* 在试图更新后操作更新够的dom */
+                    // Vue.nextTick(()=>{
+                    //     document.getElementById('ipt').focus();
+                    // })
+                    // this.$nextTick(()=>{
+                    //     document.getElementById('ipt').focus();
+                    // })
+                    setTimeout(()=>{
+                        // document.getElementById('ipt').focus();
+                        this.$refs['ipt'].focus();
+                    }, 0)
+                },
+                deleteKey(){
+                    // delete this.myInfo.age;
+                    /* 能确保删除响应式数据的key后更新视图 */
+                    // this.$delete(this.myInfo, 'age');
+
+                    this._a = '啦啦啦',
+                    console.log(this._a);
+                },
+                someMethod(vl, ol){
+                    console.log(vl, ol);
+                },
+                handle1(nl,ol){
+                    console.log('数组第一个');
+                },
+                
+            }
+        })
+    </script>
+
+</body>
+</html>
