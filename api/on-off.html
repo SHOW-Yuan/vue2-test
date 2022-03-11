@@ -6,15 +6,77 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <h1>$on $off $emit 常用与兄弟组件传值</h1>
+    <h3>$once只调一次不需要使用$off解绑</h3>
     <div id="app">
+        <m-component1></m-component1>
+        <m-component2></m-component2>
+        
     </div>
+
     <script src="../vue.js"></script>
     <script>
+        // 搭建空实例
+        const eventBus = new Vue();
+        Vue.component('m-component1', {
+            props: [],
+            created(){
+                this.$on('child-click-fn', arg=>{
+                    console.log('我是用$on监听事件并触发的，子组件的clickFn被执行了,参数是:', arg);
+                })
+            },
+            methods: {
+                clickFn(){
+                    eventBus.$emit('aevent', '笑屁呢');
+                },
+                removeListener() {
+                    // this.$off('aevent');
+                    // console.log('解除监听');
+                }
+            },
+            render(h){
+                return h('div', [
+                    h('button', {
+                        on: {
+                            click: this.clickFn
+                        }
+                    }, '我是子组件'),
+                    h('button', {
+                        on: {
+                            click: this.removeListener
+                        }
+                    }, '解除监听'),
+                ])
+            }
+        })
+
+        Vue.component('m-component2', {
+            data(){
+                return {
+                    msg: '哈哈哈哈哈哈哈哈'
+                }
+            },
+            template:'<div>{{msg}}</div>',
+            created(){
+                eventBus.$on('aevent', arg=>{
+                    console.log(11111,arg);
+                    this.msg = arg
+                })
+            },
+            destroyed(){
+                eventBus.$off('aevent');
+            }
+        })
+
         new Vue({
             el: '#app',
             data: {
                 
+            },
+            methods: {
+                parentClickFn(arg) {
+                    console.log('我是父组件，子组件传过来的参数是：', arg);
+                }
             }
         })
     </script>
