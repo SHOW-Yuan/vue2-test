@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <div id="app">
+        <input @keyup.enter="btn('hello', $event)" type="text">
+        <button :abc="123" :name-info.camel="123">哈哈哈哈哈</button>
+        <button ref="btn" :abc.prop="123">哈哈哈哈哈</button>
+        <!-- <svg :view-box.camel="'123'"></svg> -->
+
+        <my-component :name.sync="name" ></my-component>
+    </div>
+    <script src="../vue.js"></script>
+    <script>
+        Vue.component('my-component', {
+            props: ['name'],
+            template: `<div @click="$emit('update:name', '李四')">{{ name }}</div>`
+        })
+
+        new Vue({
+            el: '#app',
+            data: {
+                name:'张三'
+            },
+            mounted(){
+                const btn = this.$refs['btn']
+                console.log(btn.abc);
+            },
+            methods: {
+                btn(txt, e){
+                    console.log(txt, e);
+                }
+            }
+        })
+    </script>
+
+</body>
+</html>
