@@ -35,8 +35,17 @@ export default {
       // $router.go() === window.history.go()
     }
   },
+  beforeRouteEnter(to, form, next){
+    console.log(11111,to, form);
+    next(vm=>{
+      console.log(vm);
+    })
+  },
   beforeRouteUpdate(to, form){
-    console.log(to, form);
+    console.log(22222,to, form);
+  },
+  beforeRouteLeave(to, form){
+    console.log(33333,to, form);
   }
 }
 </script>

@@ -19,10 +19,15 @@ const routes = [
                 path: '/one', 
                 component: HelloWorld1
             }
-        ]
+        ],
+        // 路由独享的守卫
+        beforeEnter: (to, form)=>{
+            console.log(to, form);
+            return false;
+        }
     },
     {
-        path: '/',
+        path: '/a',
         redirect: (to,from)=>{
             console.log(to,from);
             return { path: '/search', query: { qwe: 123 } }
@@ -34,6 +39,23 @@ Vue.use(VueRouter);
 const router = new VueRouter({
     routes
 });
+
+// 路由前置守卫
+router.beforeEach((to,form) => {
+    console.log(to,form);
+    console.log(to.meta.requiresCamera);
+    return false;
+})
+
+// 路由解析守卫
+router.beforeResolve(()=>{
+    // 和router.beforeEach相同
+})
+
+// 路由后置守卫 和前置守卫不同的是没有next()方法
+router.afterEach((to, form)=>{
+    console.log(to, form);
+})
 
 export default {
     instance: router
